@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Форма для Telegram</title>
+    <meta charset="UTF-8">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; }
+        button { background: #0088cc; color: white; border: none; }
+        button:disabled { background: #ccc; }
+    </style>
+</head>
+<body>
+    <input type="text" placeholder="Фамилия" id="lastName" required>
+    <input type="text" placeholder="Имя" id="firstName" required>
+    <input type="text" placeholder="Никнейм" id="nickname" required>
+    <input type="tel" placeholder="Телефон (необязательно)" id="phone">
+    <input type="email" placeholder="Email" id="email" required>
+    
+    <div>
+        <input type="checkbox" id="policyAgree">
+        <label>Я согласен с политикой конфиденциальности</label>
+    </div>
+    
+    <button id="submitBtn" disabled>Отправить</button>
+
+    <script>
+        document.getElementById('policyAgree').addEventListener('change', function() {
+            document.getElementById('submitBtn').disabled = !this.checked;
+        });
+        
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            const data = {
+                lastName: document.getElementById('lastName').value,
+                firstName: document.getElementById('firstName').value,
+                nickname: document.getElementById('nickname').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value
+            };
+            
+            if (window.Telegram.WebApp) {
+                Telegram.WebApp.sendData(JSON.stringify(data));
+                Telegram.WebApp.close();
+            }
+        });
+    </script>
+</body>
+</html>
