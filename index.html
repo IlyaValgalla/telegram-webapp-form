@@ -1,117 +1,69 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Форма для Telegram</title>
-    <meta charset="UTF-8">
+    <title>Регистрация</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script async src="https://telegram.org/js/telegram-widget.js?22" 
+            data-telegram-login="RrrroboCoins_bot" 
+            data-size="large" 
+            data-userpic="true"
+            data-onauth="onTelegramAuth"
+            data-request-access="write"></script>
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            padding: 20px;
-            max-width: 100%;
-            box-sizing: border-box;
-            line-height: 1.5;
-        }
-        input, button { 
-            width: 100%; 
-            padding: 12px; 
-            margin: 8px 0; 
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
-        }
-        button { 
-            background: #0088cc; 
-            color: white; 
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #006699;
-        }
-        button:disabled { 
-            background: #cccccc; 
-            cursor: not-allowed;
-        }
-        .checkbox-container {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-        }
-        .checkbox-container input {
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-            margin-top: 2px;
-        }
-        .policy-text {
-            font-size: 14px;
-            color: #333;
-        }
-        .policy-link {
-            color: #0088cc;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .policy-link:hover {
-            text-decoration: underline;
-        }
+        body { font-family: Arial; padding: 20px; max-width: 100%; }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; }
+        #auth-container { text-align: center; margin: 20px 0; }
+        #form-container { display: none; }
     </style>
 </head>
 <body>
-    <input type="text" placeholder="Фамилия*" id="lastName" required>
-    <input type="text" placeholder="Имя*" id="firstName" required>
-    <input type="text" placeholder="Никнейм*" id="nickname" required>
-    <input type="tel" placeholder="Телефон (необязательно)" id="phone">
-    <input type="email" placeholder="Email*" id="email" required>
-    
-    <div class="checkbox-container">
-        <input type="checkbox" id="policyAgree">
-        <label for="policyAgree" class="policy-text">
-            Принимаю условия <a href="https://www.mediaguru.ru/wp-content/uploads/2014/04/404error.jpg" target="_blank" class="policy-link">Политики конфиденциальности</a>
-        </label>
+    <div id="auth-container">
+        <p>Сначала авторизуйтесь:</p>
+        <!-- Кнопка авторизации Telegram -->
     </div>
-    
-    <button id="submitBtn" disabled>Зарегистрироваться</button>
+
+    <div id="form-container">
+        <input type="text" id="firstName" placeholder="Имя" required>
+        <input type="text" id="lastName" placeholder="Фамилия" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="phone" placeholder="Телефон">
+        
+        <button id="submitBtn">Зарегистрироваться</button>
+    </div>
 
     <script>
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
-        
-        document.getElementById('policyAgree').addEventListener('change', function() {
-            document.getElementById('submitBtn').disabled = !this.checked;
-        });
-        
+        // Обработка авторизации
+        function onTelegramAuth(user) {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('form-container').style.display = 'block';
+            console.log("Авторизован:", user);
+            
+            // Можно заполнить некоторые поля автоматически
+            document.getElementById('firstName').value = user.first_name || '';
+            document.getElementById('lastName').value = user.last_name || '';
+        }
+
+        // Отправка формы
         document.getElementById('submitBtn').addEventListener('click', function() {
             const data = {
-                lastName: document.getElementById('lastName').value,
                 firstName: document.getElementById('firstName').value,
-                nickname: document.getElementById('nickname').value,
-                phone: document.getElementById('phone').value,
+                lastName: document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
-                policyAgreed: true
+                phone: document.getElementById('phone').value,
+                telegramData: window.Telegram.WebApp.initDataUnsafe.user
             };
-
-            console.log("Данные формы:", data); // Отладка
             
             if(window.Telegram && Telegram.WebApp) {
-                console.log("WebApp доступен, отправляем данные...");
                 Telegram.WebApp.sendData(JSON.stringify(data));
                 Telegram.WebApp.close();
             } else {
-                console.error("WebApp не доступен!");
-                alert("Ошибка: WebApp не инициализирован");
+                alert("Ошибка: форма не в Telegram WebApp");
             }
         });
-            
 
         // Инициализация WebApp
-        if (window.Telegram.WebApp) {
-            Telegram.WebApp.expand();
-            Telegram.WebApp.enableClosingConfirmation();
-        }
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
     </script>
 </body>
 </html>
