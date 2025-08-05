@@ -1,68 +1,125 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Регистрация</title>
+    <title>Форма регистрации</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { 
-            font-family: Arial; 
+        body {
+            font-family: Arial, sans-serif;
             padding: 20px;
             max-width: 100%;
-            box-sizing: border-box;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         .form-group {
             margin-bottom: 15px;
         }
-        input, button {
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
-            margin-bottom: 10px;
         }
         button {
-            background: #0088cc;
+            width: 100%;
+            padding: 12px;
+            background-color: #0088cc;
             color: white;
             border: none;
-            font-weight: bold;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #006699;
+        }
+        .checkbox {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .checkbox input {
+            width: auto;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="form-group">
-        <input type="text" id="firstName" placeholder="Имя" required>
+    <div class="form-container">
+        <div class="form-group">
+            <label for="firstName">Имя*</label>
+            <input type="text" id="firstName" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="lastName">Фамилия*</label>
+            <input type="text" id="lastName" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email*</label>
+            <input type="email" id="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Телефон</label>
+            <input type="tel" id="phone">
+        </div>
+        
+        <div class="checkbox">
+            <input type="checkbox" id="policyAgree" required>
+            <label for="policyAgree">Я согласен с <a href="https://example.com/privacy" target="_blank">политикой конфиденциальности</a></label>
+        </div>
+        
+        <button id="submitBtn">Зарегистрироваться</button>
     </div>
-    <div class="form-group">
-        <input type="text" id="lastName" placeholder="Фамилия" required>
-    </div>
-    <div class="form-group">
-        <input type="email" id="email" placeholder="Email" required>
-    </div>
-    <div class="form-group">
-        <input type="tel" id="phone" placeholder="Телефон (необязательно)">
-    </div>
-    
-    <button id="submitBtn">Зарегистрироваться</button>
 
     <script>
+        // Инициализация Telegram WebApp
         Telegram.WebApp.ready();
         Telegram.WebApp.expand();
         
         document.getElementById('submitBtn').addEventListener('click', function() {
+            // Проверка согласия с политикой
+            if(!document.getElementById('policyAgree').checked) {
+                alert("Пожалуйста, согласитесь с политикой конфиденциальности");
+                return;
+            }
+            
+            // Сбор данных
             const data = {
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value || null
+                phone: document.getElementById('phone').value || null,
+                policyAgreed: true
             };
             
-            if(data.firstName && data.lastName && data.email) {
+            // Проверка обязательных полей
+            if(!data.firstName || !data.lastName || !data.email) {
+                alert("Заполните все обязательные поля!");
+                return;
+            }
+            
+            // Отправка данных в бота
+            if(window.Telegram && Telegram.WebApp) {
                 Telegram.WebApp.sendData(JSON.stringify(data));
                 Telegram.WebApp.close();
             } else {
-                alert("Заполните обязательные поля!");
+                alert("Ошибка: форма должна быть открыта через Telegram");
             }
         });
     </script>
