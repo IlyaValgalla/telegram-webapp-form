@@ -5,10 +5,37 @@
     <meta charset="UTF-8">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        input, button { width: 100%; padding: 10px; margin: 10px 0; }
-        button { background: #0088cc; color: white; border: none; }
-        button:disabled { background: #ccc; }
+        body { 
+            font-family: Arial; 
+            padding: 20px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        input, button { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button { 
+            background: #0088cc; 
+            color: white; 
+            border: none; 
+        }
+        button:disabled { 
+            background: #ccc; 
+            cursor: not-allowed;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .checkbox-container input {
+            width: auto;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -18,9 +45,9 @@
     <input type="tel" placeholder="Телефон (необязательно)" id="phone">
     <input type="email" placeholder="Email" id="email" required>
     
-    <div>
+    <div class="checkbox-container">
         <input type="checkbox" id="policyAgree">
-        <label>Я согласен с политикой конфиденциальности</label>
+        <label for="policyAgree">Я согласен с политикой конфиденциальности</label>
     </div>
     
     <button id="submitBtn" disabled>Отправить</button>
