@@ -6,51 +6,75 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { 
-            font-family: Arial; 
+            font-family: Arial, sans-serif; 
             padding: 20px;
             max-width: 100%;
             box-sizing: border-box;
+            line-height: 1.5;
         }
         input, button { 
             width: 100%; 
-            padding: 10px; 
-            margin: 10px 0; 
+            padding: 12px; 
+            margin: 8px 0; 
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 16px;
         }
         button { 
             background: #0088cc; 
             color: white; 
-            border: none; 
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #006699;
         }
         button:disabled { 
-            background: #ccc; 
+            background: #cccccc; 
             cursor: not-allowed;
         }
         .checkbox-container {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin: 20px 0;
         }
         .checkbox-container input {
-            width: auto;
+            width: 18px;
+            height: 18px;
             margin-right: 10px;
+            margin-top: 2px;
+        }
+        .policy-text {
+            font-size: 14px;
+            color: #333;
+        }
+        .policy-link {
+            color: #0088cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .policy-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <input type="text" placeholder="Фамилия*" id="lastName" required>
     <input type="text" placeholder="Имя*" id="firstName" required>
-    <input type="text" placeholder="Никнейм из ТГ*" id="nickname" required>
-    <input type="tel" placeholder="Телефон" id="phone">
+    <input type="text" placeholder="Никнейм*" id="nickname" required>
+    <input type="tel" placeholder="Телефон (необязательно)" id="phone">
     <input type="email" placeholder="Email*" id="email" required>
     
     <div class="checkbox-container">
         <input type="checkbox" id="policyAgree">
-        <label for="policyAgree">Я согласен с политикой конфиденциальности</label>
+        <label for="policyAgree" class="policy-text">
+            Принимаю условия <a href="https://www.mediaguru.ru/wp-content/uploads/2014/04/404error.jpg" target="_blank" class="policy-link">Политики конфиденциальности</a>
+        </label>
     </div>
     
-    <button id="submitBtn" disabled>Отправить</button>
+    <button id="submitBtn" disabled>Зарегистрироваться</button>
 
     <script>
         document.getElementById('policyAgree').addEventListener('change', function() {
@@ -63,14 +87,23 @@
                 firstName: document.getElementById('firstName').value,
                 nickname: document.getElementById('nickname').value,
                 phone: document.getElementById('phone').value,
-                email: document.getElementById('email').value
+                email: document.getElementById('email').value,
+                policyAgreed: true
             };
             
             if (window.Telegram.WebApp) {
                 Telegram.WebApp.sendData(JSON.stringify(data));
                 Telegram.WebApp.close();
+            } else {
+                alert('Данные отправлены: ' + JSON.stringify(data));
             }
         });
+
+        // Инициализация WebApp
+        if (window.Telegram.WebApp) {
+            Telegram.WebApp.expand();
+            Telegram.WebApp.enableClosingConfirmation();
+        }
     </script>
 </body>
 </html>
