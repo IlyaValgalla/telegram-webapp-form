@@ -77,6 +77,9 @@
     <button id="submitBtn" disabled>Зарегистрироваться</button>
 
     <script>
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        
         document.getElementById('policyAgree').addEventListener('change', function() {
             document.getElementById('submitBtn').disabled = !this.checked;
         });
@@ -90,14 +93,19 @@
                 email: document.getElementById('email').value,
                 policyAgreed: true
             };
+
+            console.log("Данные формы:", data); // Отладка
             
-            if (window.Telegram.WebApp) {
+            if(window.Telegram && Telegram.WebApp) {
+                console.log("WebApp доступен, отправляем данные...");
                 Telegram.WebApp.sendData(JSON.stringify(data));
                 Telegram.WebApp.close();
             } else {
-                alert('Данные отправлены: ' + JSON.stringify(data));
+                console.error("WebApp не доступен!");
+                alert("Ошибка: WebApp не инициализирован");
             }
         });
+            
 
         // Инициализация WebApp
         if (window.Telegram.WebApp) {
