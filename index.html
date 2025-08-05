@@ -3,67 +3,68 @@
 <head>
     <title>Регистрация</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script async src="https://telegram.org/js/telegram-widget.js?22" 
-            data-telegram-login="RrrroboCoins_bot" 
-            data-size="large" 
-            data-userpic="true"
-            data-onauth="onTelegramAuth"
-            data-request-access="write"></script>
     <style>
-        body { font-family: Arial; padding: 20px; max-width: 100%; }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; }
-        #auth-container { text-align: center; margin: 20px 0; }
-        #form-container { display: none; }
+        body { 
+            font-family: Arial; 
+            padding: 20px;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div id="auth-container">
-        <p>Сначала авторизуйтесь:</p>
-        <!-- Кнопка авторизации Telegram -->
-    </div>
-
-    <div id="form-container">
+    <div class="form-group">
         <input type="text" id="firstName" placeholder="Имя" required>
-        <input type="text" id="lastName" placeholder="Фамилия" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="tel" id="phone" placeholder="Телефон">
-        
-        <button id="submitBtn">Зарегистрироваться</button>
     </div>
+    <div class="form-group">
+        <input type="text" id="lastName" placeholder="Фамилия" required>
+    </div>
+    <div class="form-group">
+        <input type="email" id="email" placeholder="Email" required>
+    </div>
+    <div class="form-group">
+        <input type="tel" id="phone" placeholder="Телефон (необязательно)">
+    </div>
+    
+    <button id="submitBtn">Зарегистрироваться</button>
 
     <script>
-        // Обработка авторизации
-        function onTelegramAuth(user) {
-            document.getElementById('auth-container').style.display = 'none';
-            document.getElementById('form-container').style.display = 'block';
-            console.log("Авторизован:", user);
-            
-            // Можно заполнить некоторые поля автоматически
-            document.getElementById('firstName').value = user.first_name || '';
-            document.getElementById('lastName').value = user.last_name || '';
-        }
-
-        // Отправка формы
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        
         document.getElementById('submitBtn').addEventListener('click', function() {
             const data = {
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
                 email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                telegramData: window.Telegram.WebApp.initDataUnsafe.user
+                phone: document.getElementById('phone').value || null
             };
             
-            if(window.Telegram && Telegram.WebApp) {
+            if(data.firstName && data.lastName && data.email) {
                 Telegram.WebApp.sendData(JSON.stringify(data));
                 Telegram.WebApp.close();
             } else {
-                alert("Ошибка: форма не в Telegram WebApp");
+                alert("Заполните обязательные поля!");
             }
         });
-
-        // Инициализация WebApp
-        Telegram.WebApp.ready();
-        Telegram.WebApp.expand();
     </script>
 </body>
 </html>
